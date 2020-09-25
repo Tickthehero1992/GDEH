@@ -48,14 +48,30 @@
 #define GDEH_SET_Y_ADDR_START_END_CMD 0x45
 #define GDEH_AUTO_RED_CMD 0x46
 #define GDEH_AUTO_BW_CMD 0x47
+#define GDEH_XSET_CNTR_CMD 0x4E
+#define GDEH_YSET_CNTR_CMD 0x4F
 #define GDEH_TERMINATOR_CMD 0x7F
 
+/********************Commands***********************/
+#define GDEH_RESET EPD_W21_WriteCMD(GDEH_SW_RESET_CMD);
+#define GDEH_INITIAL_CODE EPD_W21_WriteCMD(GDEH_INITIAL_CODE_SETTING_CMD);
+#define GDEH_MASTER_ACTIVATE EPD_W21_WriteCMD(GDEH_MASTER_ACTIVATION_CMD);
+#define GDEH_Write_BW(_byte) {EPD_W21_WriteCMD(GDEH_WRITE_BW_CMD); EPD_W21_WriteDATA(_byte);}
+#define GDEH_Write_RED(_byte) {EPD_W21_WriteCMD(GDEH_WRITE_RED_CMD); EPD_W21_WriteDATA(_byte);}
+#define GDEH_PROGRAM_OTP EPD_W21_WriteCMD(GDEH_PRG_VCOM_OTP_CMD)
+#define GDEH_WRITE_REG_VCOM_CNTL {EPD_W21_WriteCMD(GDEH_WR_VCOM_CNTL_CMD);\
+EPD_W21_WriteDATA(0x04);\
+EPD_W21_WriteDATA(0x63);}
+#define GDEH_AUTO_RED(_byte) {EPD_W21_WriteCMD(GDEH_AUTO_RED_CMD);EPD_W21_WriteDATA(_byte);}
+#define GDEH_AUTO_BW(_byte) {EPD_W21_WriteCMD(GDEH_AUTO_BW_CMD);EPD_W21_WriteDATA(_byte);}
+#define GDEH_TERMINATOR EPD_W21_WriteCMD(GDEH_TERMINATOR_CMD )
 /************Gate Scanning*****************/
 
 #define GDEH_GD 0x04
 #define GDEH_SM 0x02
 #define GDEH_TB 0x01
 #define GDEH_DEFAULT_GATE_SCAN_DIR 0x00
+
 
 /*****Voltage Parameters*****/
 #define GDEH_DEFAULT_VOLTAGE VGH_20
@@ -186,6 +202,7 @@ typedef enum GDEH_TRANS_ST_VBD
 	LUT3=0x04
 }GDEH_TRANS_ST_VBD;
 
+
 typedef struct GDEH_WFM_CTL
 {
 	GDEH_VDB_OPT VBD;
@@ -194,6 +211,7 @@ typedef struct GDEH_WFM_CTL
 	GDEH_TRANS_ST_VBD VBD_LUT;
 }GDEH_WFM_CTL;
 
+#define GDEH_WFM_CTL_DEFAULT 0x05
 /**********Display structure****************/
 
 typedef struct GDEH
@@ -205,14 +223,20 @@ typedef struct GDEH
 	GDEH_GATE_VOLTAGE VOLTAGE;
 	GDEH_ENTRY_SEQ SEQUENCE;
 	GDEH_WFM_CTL WFV;
+	GDEH_Display_Update UPD;
 
 }GDEH;
 
 void GDEH_INIT(GDEH);
 void GDEH_WRITE_VOLTAGE(GDEH_GATE_VOLTAGE);
 void GDEH_WRITE_SOURCE_VOLTAGE(float,float);
-void GDEH_INITIAL_CODE();
 void GDEH_WRITE_REG_INI_CODE();
+
+/*********Read Functions (not working yet)*****/
+void GDEH_RAM_READ();
+void GDEH_READ_OTP();
+void GDEH_READ_USER_ID();
+void GDEH_READ_STATUS_Bit();
 
 #endif
 

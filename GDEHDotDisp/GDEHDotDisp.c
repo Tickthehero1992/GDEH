@@ -1,20 +1,58 @@
 #include "GDEHDotDisp.h"
 
+void GDEH_BUSY_CHECK()
+{
+while(isEPD_W21_BUSY);
+}
+
 void GDEH_INIT(GDEH GDE)
 {
+	EPD_W21_Init();
+
+	GDEH_RESET;
+
 	EPD_W21_WriteCMD(GDEH_DRIVER_CONTROL_CMD);
+
 	uint8_t temp=GDE.width&0xFF;
 	EPD_W21_WriteDATA(temp);
+
 	temp=GDE.width>>8&0xff;
 	EPD_W21_WriteDATA(temp);
-    if(!GDE.gate_drive)EPD_W21_WriteDATA(GDEH_DEFAULT_GATE_SCAN_DIR);
+
+	if(!GDE.gate_drive)EPD_W21_WriteDATA(GDEH_DEFAULT_GATE_SCAN_DIR);
     else EPD_W21_WriteDATA(GDE.gate_drive);
 
-	if(!GDE.VOLTAGE)
+	if(!GDE.VOLTAGE)GDEH_WRITE_VOLTAGE(GDEH_DEFAULT_VOLTAGE);
+	else GDEH_WRITE_VOLTAGE(GDE.VOLTAGE);
+
+	GDEH_WRITE_SOURCE_VOLTAGE(15,-15);
+
+	GDEH_INITIAL_CODE;
+
+	if(!GDE.SEQUENCE)GDEH_ENTRYMODE_SETTINGS(0x03);
+	else GDEH_ENTRYMODE_SETTINGS(GDE.SEQUENCE);
+
+	GDEH_SET_POSITION(0,GDE.height,0, GDE.width);
+
+	if(!GDE.WFV.TRANS_CNTL)
 	{
+		GDEH_WFM_CTL WFM={GDEH_WFM_CTL_DEFAULT, 0x00, 0x00,0x00};
+		GDEH_WAVEFORM_CTL(GDE.WFM);
+	}
+	else GDEH_WAVEFORM_CTL(GDE.WFV);
+
+	if(!GDE.UPD.ColorOpt)
+	{
+		GDEH_Display_Update UPD;
+		UPD.ColorOpt=0x00;
+		UPD.SourceMode=0x80;
+		UPD.StageMaster=0xFF;
 
 	}
+	else GDEH_UPD_CNT(GDE.UPD);
 
+	GDEH_SET_ADDRESS_CNTR(GDE.height, GDE.width);
+	GDEH_BUSY_CHECK();
 }
 
 void GDEH_WRITE_VOLTAGE(GDEH_GATE_VOLTAGE Voltage)
@@ -34,10 +72,8 @@ void GDEH_WRITE_SOURCE_VOLTAGE(float Voltage, float VSL)
   EPD_W21_WriteDATA(abs(VSL*2));
 }
 
-void GDEH_INITIAL_CODE()
-{
-	EPD_W21_WriteCMD(GDEH_INITIAL_CODE_SETTING_CMD);
-}
+
+
 
 void GDEH_WRITE_REG_INI_CODE()
 {
@@ -74,7 +110,6 @@ void GDEH_ENTRYMODE_SETTINGS(GDEH_ENTRY_SEQ SEQ)
 	EPD_W21_WriteDATA(SEQ);
 }
 
-#define GDEH_RESET EPD_W21_WriteCMD(GDEH_SW_RESET_CMD);
 
 
 void GDEH_VCI_DETECTION(GDEH_VCI_DETECT VCI)
@@ -99,7 +134,7 @@ uint16_t GDEH_TEMP_READ()
 	return 	temp;
 }
 
-#define GDEH_MASTER_ACTIVATE EPD_W21_WriteCMD(GDEH_MASTER_ACTIVATION_CMD);
+
 
 void GDEH_UPD_CNT(GDEH_Display_Update UPD)
 {
@@ -110,12 +145,10 @@ void GDEH_UPD_CNT(GDEH_Display_Update UPD)
 	EPD_W21_WriteDATA(UPD.StageMaster);
 }
 
-#define GDEH_Write_BW(_byte) {EPD_W21_WriteCMD(GDEH_WRITE_BW_CMD); EPD_W21_WriteDATA(_byte);}
-#define GDEH_Write_RED(_byte) {EPD_W21_WriteCMD(GDEH_WRITE_RED_CMD); EPD_W21_WriteDATA(_byte);}
 
 uint8_t GDEH_READ_RAM()
 {
-unt8_t readed=0;
+uint8_t readed=0;
 
 return readed;
 }
@@ -127,10 +160,7 @@ void GDEH_VCOM_SENSE_Duration(uint8_t Duration)
 	EPD_W21_WriteDATA(Duration);
 }
 
-#define GDEH_PROGRAM_OTP EPD_W21_WriteCMD(GDEH_PRG_VCOM_OTP_CMD)
-#define GDEH_WRITE_REG_VCOM_CNTL {EPD_W21_WriteCMD(GDEH_WR_VCOM_CNTL_CMD);\
-EPD_W21_WriteDATA(0x04);\
-EPD_W21_WriteDATA(0x63);}
+
 
 
 uint8_t GDEH_WRITE_VCOM(float VCOM) //return
@@ -141,9 +171,7 @@ uint8_t GDEH_WRITE_VCOM(float VCOM) //return
 	return temp;
 }
 
-void GDEH_READ_OTP();
-void GDEH_READ_USER_ID();
-void GDEH_READ_STATUS_Bit();
+
 
 void GDEH_WRITE_REGS_FOR_DISP_OPT_USER(uint8_t* DATA, uint8_t user)
 {
@@ -161,18 +189,24 @@ void GDEH_WAVEFORM_CTL(GDEH_WFM_CTL WFM)
 	EPD_W21_WriteDATA(WFM.VBD<<6|WFM.VBD_FLS<<4|WFM.TRANS_CNTL<<2|WFM.VBD_LUT);
 }
 
-void GDEH_RAM_READ();
 
 void GDEH_SET_POSITION(uint8_t X_Start, uint8_t X_End, uint16_t Y_Start, uint16_t Y_End)
 {
 	EPD_W21_WriteCMD(GDEH_SET_X_ADDR_START_END_CMD);
 	EPD_W21_WriteDATA(X_Start);
-	EPD_W21_WriteDATA(X_END);
+	EPD_W21_WriteDATA(X_End);
 	EPD_W21_WriteCMD(GDEH_SET_Y_ADDR_START_END_CMD);
 	EPD_W21_WriteDATA(Y_Start);
-	EPD_W21_WriteDATA(Y_END);
+	EPD_W21_WriteDATA(Y_End);
 }
 
-#define GDEH_AUTO_RED(_byte) {EPD_W21_WriteCMD(GDEH_AUTO_RED_CMD);EPD_W21_WriteDATA(_byte);}
-#define GDEH_AUTO_BW(_byte) {EPD_W21_WriteCMD(GDEH_AUTO_BW_CMD);EPD_W21_WriteDATA(_byte);}
-#define GDEH_TERMINATOR EPD_W21_WriteCMD(GDEH_TERMINATOR_CMD )
+void GDEH_SET_ADDRESS_CNTR(uint8_t ADRX, uint16_t ADRY)
+{
+	EPD_W21_WriteCMD(GDEH_XSET_CNTR_CMD);
+	EPD_W21_WriteDATA(ADRX);
+
+	EPD_W21_WriteCMD(GDEH_YSET_CNTR_CMD);
+	EPD_W21_WriteDATA(ADRY&0xFF);
+	EPD_W21_WriteDATA((ADRY>>8)&0xFF);
+}
+
