@@ -1,0 +1,178 @@
+#include "GDEHDotDisp.h"
+
+void GDEH_INIT(GDEH GDE)
+{
+	EPD_W21_WriteCMD(GDEH_DRIVER_CONTROL_CMD);
+	uint8_t temp=GDE.width&0xFF;
+	EPD_W21_WriteDATA(temp);
+	temp=GDE.width>>8&0xff;
+	EPD_W21_WriteDATA(temp);
+    if(!GDE.gate_drive)EPD_W21_WriteDATA(GDEH_DEFAULT_GATE_SCAN_DIR);
+    else EPD_W21_WriteDATA(GDE.gate_drive);
+
+	if(!GDE.VOLTAGE)
+	{
+
+	}
+
+}
+
+void GDEH_WRITE_VOLTAGE(GDEH_GATE_VOLTAGE Voltage)
+{
+	EPD_W21_WriteCMD(GDEH_DRIVING_VOLTAGE_CMD);
+	EPD_W21_WriteDATA(Voltage);
+}
+
+void GDEH_WRITE_SOURCE_VOLTAGE(float Voltage, float VSL)
+{
+  uint8_t V;
+  if(Voltage>8.9) V=Voltage*10;
+  else V=Voltage*5;
+  EPD_W21_WriteCMD(GDEH_DRIVING_VOTLTAGE_SRC_CMD);
+  EPD_W21_WriteDATA(V);
+  EPD_W21_WriteDATA(0x01);
+  EPD_W21_WriteDATA(abs(VSL*2));
+}
+
+void GDEH_INITIAL_CODE()
+{
+	EPD_W21_WriteCMD(GDEH_INITIAL_CODE_SETTING_CMD);
+}
+
+void GDEH_WRITE_REG_INI_CODE()
+{
+	EPD_W21_WriteCMD(GDEH_INITIAL_CODE_SETTING_CMD);
+	EPD_W21_WriteDATA(0x01);
+	EPD_W21_WriteDATA(0x01);
+	EPD_W21_WriteDATA(0x01);
+}
+
+uint8_t GDEH_READ_REG()
+{
+	EPD_W21_WriteCMD(GDEH_READ_INITIAL_CODE_SETTINGS_CMD);
+	return SPI_Read();
+}
+
+void GDEH_BOOST_START(GDEH_SOFT_START SOFT)
+{
+	EPD_W21_WriteCMD(GDEH_READ_INITIAL_CODE_SETTINGS_CMD);
+	EPD_W21_WriteDATA(SOFT.A_phase);
+	EPD_W21_WriteDATA(SOFT.B_phase);
+	EPD_W21_WriteDATA(SOFT.C_phase);
+	EPD_W21_WriteDATA(SOFT.D_duration);
+}
+
+void GDEH_GO_SLEEP(GDEH_DEEP_SLEEP Sleep)
+{
+	EPD_W21_WriteCMD(GDEH_DEEP_SLEEP_MODE_CMD);
+	EPD_W21_WriteDATA(Sleep);
+}
+
+void GDEH_ENTRYMODE_SETTINGS(GDEH_ENTRY_SEQ SEQ)
+{
+	EPD_W21_WriteCMD(GDEH_DATA_ENTRY_MODE_SETTING_CMD);
+	EPD_W21_WriteDATA(SEQ);
+}
+
+#define GDEH_RESET EPD_W21_WriteCMD(GDEH_SW_RESET_CMD);
+
+
+void GDEH_VCI_DETECTION(GDEH_VCI_DETECT VCI)
+{
+	EPD_W21_WriteCMD(GDEH_VCI_DETECTION_CMD);
+	EPD_W21_WriteDATA(VCI);
+}
+
+
+void GDEH_TEMP_CNTL(uint16_t SensCNT)
+{
+	EPD_W21_WriteCMD(GDEH_TEMP_SENSOR_CNTL_CHS_CMD);
+	EPD_W21_WriteDATA(SensCNT&0xFF);
+	EPD_W21_WriteDATA((SensCNT>>8)&0xFF);
+}
+
+
+uint16_t GDEH_TEMP_READ()
+{
+	uint16_t temp=0;
+
+	return 	temp;
+}
+
+#define GDEH_MASTER_ACTIVATE EPD_W21_WriteCMD(GDEH_MASTER_ACTIVATION_CMD);
+
+void GDEH_UPD_CNT(GDEH_Display_Update UPD)
+{
+	EPD_W21_WriteCMD(GDEH_DISPLAY_UPD_CNTL_CMD);
+	EPD_W21_WriteDATA(UPD.ColorOpt);
+	EPD_W21_WriteDATA(UPD.SourceMode);
+	EPD_W21_WriteCMD(GDEH_DISPLAY_UPD_CNTL_2_CMD);
+	EPD_W21_WriteDATA(UPD.StageMaster);
+}
+
+#define GDEH_Write_BW(_byte) {EPD_W21_WriteCMD(GDEH_WRITE_BW_CMD); EPD_W21_WriteDATA(_byte);}
+#define GDEH_Write_RED(_byte) {EPD_W21_WriteCMD(GDEH_WRITE_RED_CMD); EPD_W21_WriteDATA(_byte);}
+
+uint8_t GDEH_READ_RAM()
+{
+unt8_t readed=0;
+
+return readed;
+}
+
+void GDEH_VCOM_SENSE_Duration(uint8_t Duration)
+{
+	EPD_W21_WriteCMD(GDEH_VCOM_SENS_CMD);
+	EPD_W21_WriteCMD(GDEH_VCOM_SENSE_DURATION_CMD);
+	EPD_W21_WriteDATA(Duration);
+}
+
+#define GDEH_PROGRAM_OTP EPD_W21_WriteCMD(GDEH_PRG_VCOM_OTP_CMD)
+#define GDEH_WRITE_REG_VCOM_CNTL {EPD_W21_WriteCMD(GDEH_WR_VCOM_CNTL_CMD);\
+EPD_W21_WriteDATA(0x04);\
+EPD_W21_WriteDATA(0x63);}
+
+
+uint8_t GDEH_WRITE_VCOM(float VCOM) //return
+{
+	uint8_t temp= abs(VCOM*10)*4;
+	EPD_W21_WriteCMD(GDEH_WR_VCOM_REG_CMD);
+	EPD_W21_WriteDATA(temp);
+	return temp;
+}
+
+void GDEH_READ_OTP();
+void GDEH_READ_USER_ID();
+void GDEH_READ_STATUS_Bit();
+
+void GDEH_WRITE_REGS_FOR_DISP_OPT_USER(uint8_t* DATA, uint8_t user)
+{
+	if(user) EPD_W21_WriteCMD(GDEH_WR_REG_USER_ID_CMD);
+	else EPD_W21_WriteCMD(GDEH_WR_REG_DISP_IOT_CMD);
+	for(uint8_t i=0; i<10;i++)
+	{
+		EPD_W21_WriteDATA(DATA+i);
+	}
+}
+
+void GDEH_WAVEFORM_CTL(GDEH_WFM_CTL WFM)
+{
+	EPD_W21_WriteCMD(GDEH_WVF_CNTL_CMD);
+	EPD_W21_WriteDATA(WFM.VBD<<6|WFM.VBD_FLS<<4|WFM.TRANS_CNTL<<2|WFM.VBD_LUT);
+}
+
+void GDEH_RAM_READ();
+
+void GDEH_SET_POSITION(uint8_t X_Start, uint8_t X_End, uint16_t Y_Start, uint16_t Y_End)
+{
+	EPD_W21_WriteCMD(GDEH_SET_X_ADDR_START_END_CMD);
+	EPD_W21_WriteDATA(X_Start);
+	EPD_W21_WriteDATA(X_END);
+	EPD_W21_WriteCMD(GDEH_SET_Y_ADDR_START_END_CMD);
+	EPD_W21_WriteDATA(Y_Start);
+	EPD_W21_WriteDATA(Y_END);
+}
+
+#define GDEH_AUTO_RED(_byte) {EPD_W21_WriteCMD(GDEH_AUTO_RED_CMD);EPD_W21_WriteDATA(_byte);}
+#define GDEH_AUTO_BW(_byte) {EPD_W21_WriteCMD(GDEH_AUTO_BW_CMD);EPD_W21_WriteDATA(_byte);}
+#define GDEH_TERMINATOR EPD_W21_WriteCMD(GDEH_TERMINATOR_CMD )
