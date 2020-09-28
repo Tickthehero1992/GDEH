@@ -56,3 +56,7 @@ void GDEH_SET_ADDRESS_CNTR(uint8_t ADRX, uint16_t ADRY)-cntr address // usually 
 void GDEH_UPDATE() - update display
 void GDEH_WRITE(uint8_t *BLACK_WHITE, uint8_t* RED, int SIZE, uint8_t INVERSE) - paint Picture array
 void GDEH_CLEAR(int SIZE) - clear Display
+
+
+
+For rendering images for GDEH and GDEW displays u can use this repository:https://github.com/Tickthehero1992/Image_to_Matrix
