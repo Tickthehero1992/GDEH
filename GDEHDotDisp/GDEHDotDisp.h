@@ -53,11 +53,11 @@
 #define GDEH_TERMINATOR_CMD 0x7F
 
 /********************Commands***********************/
-#define GDEH_RESET EPD_W21_WriteCMD(GDEH_SW_RESET_CMD);
+#define GDEH_RESET {EPD_W21_WriteCMD(GDEH_SW_RESET_CMD);GDEH_BUSY_CHECK();}
 #define GDEH_INITIAL_CODE EPD_W21_WriteCMD(GDEH_INITIAL_CODE_SETTING_CMD);
 #define GDEH_MASTER_ACTIVATE EPD_W21_WriteCMD(GDEH_MASTER_ACTIVATION_CMD);
-#define GDEH_Write_BW(_byte) {EPD_W21_WriteCMD(GDEH_WRITE_BW_CMD); EPD_W21_WriteDATA(_byte);}
-#define GDEH_Write_RED(_byte) {EPD_W21_WriteCMD(GDEH_WRITE_RED_CMD); EPD_W21_WriteDATA(_byte);}
+#define GDEH_Write_BW {EPD_W21_WriteCMD(GDEH_WRITE_BW_CMD);}
+#define GDEH_Write_RED {EPD_W21_WriteCMD(GDEH_WRITE_RED_CMD);}
 #define GDEH_PROGRAM_OTP EPD_W21_WriteCMD(GDEH_PRG_VCOM_OTP_CMD)
 #define GDEH_WRITE_REG_VCOM_CNTL {EPD_W21_WriteCMD(GDEH_WR_VCOM_CNTL_CMD);\
 EPD_W21_WriteDATA(0x04);\
@@ -124,10 +124,10 @@ typedef enum GDEH_ENTRY_SEQ // AM- high bit 0- address update from X, 1- from Y
 {
     Ax_Yd_Xd=0x00,
     Ax_Yd_Xi=0x01,
-	Ax_Yi_Xd=0x02,
-	Ax_Yi_Xi=0x03,
-	Ay_Yd_Xd=0x04,
-	Ay_Yd_Xi=0x05,
+    Ax_Yi_Xd=0x02,
+    Ax_Yi_Xi=0x03,
+    Ay_Yd_Xd=0x04,
+    Ay_Yd_Xi=0x05,
     Ay_Yi_Xd=0x06,
     Ay_Yi_Xi=0x07,
 }GDEH_ENTRY_SEQ;
@@ -231,6 +231,23 @@ void GDEH_INIT(GDEH);
 void GDEH_WRITE_VOLTAGE(GDEH_GATE_VOLTAGE);
 void GDEH_WRITE_SOURCE_VOLTAGE(float,float);
 void GDEH_WRITE_REG_INI_CODE();
+void GDEH_BUSY_CHECK();
+uint8_t GDEH_READ_REG();
+void GDEH_BOOST_START(GDEH_SOFT_START);
+void GDEH_GO_SLEEP(GDEH_DEEP_SLEEP);
+void GDEH_ENTRYMODE_SETTINGS(GDEH_ENTRY_SEQ);
+void GDEH_VCI_DETECTION(GDEH_VCI_DETECT);
+void GDEH_TEMP_CNTL(uint16_t);
+void GDEH_UPD_CNT(GDEH_Display_Update);
+void GDEH_VCOM_SENSE_Duration(uint8_t);
+uint8_t GDEH_WRITE_VCOM(float);
+void GDEH_WRITE_REGS_FOR_DISP_OPT_USER(uint8_t* , uint8_t);
+void GDEH_WAVEFORM_CTL(GDEH_WFM_CTL );
+void GDEH_SET_POSITION(uint8_t X_Start, uint8_t X_End, uint16_t Y_Start, uint16_t Y_End);
+void GDEH_SET_ADDRESS_CNTR(uint8_t ADRX, uint16_t ADRY);
+void GDEH_UPDATE();
+void GDEH_WRITE(uint8_t *BLACK_WHITE, uint8_t* RED, int SIZE, uint8_t INVERSE);
+void GDEH_CLEAR(int SIZE);
 
 /*********Read Functions (not working yet)*****/
 void GDEH_RAM_READ();
