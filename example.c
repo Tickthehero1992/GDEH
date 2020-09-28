@@ -22,10 +22,10 @@ Port_Configs();
   {
 
 	  GDEH_INIT(GDE); //initialization 
-	  //GDEH_CLEAR(3800);//clear
-	  GDEH_WRITE(gImage_BW,gImage_R,3180, 1); // write Image, SIZE=(GDEH.height/8)*GDEH.width
+	  //GDEH_CLEAR(4000);//clear
+	  GDEH_WRITE(gImage_BW,gImage_R,4000, 1); // write Image, SIZE=(GDEH.height/8)*GDEH.width
 	  GDEH_GO_SLEEP(GDEH_SM_1); //deep Sleep
 	  driver_delay_xms(15000);
   }
-
+return 0;
 }
