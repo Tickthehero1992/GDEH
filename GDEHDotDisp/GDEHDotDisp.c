@@ -204,7 +204,8 @@ void GDEH_SET_POSITION(uint8_t X_Start, uint8_t X_End, uint16_t Y_Start, uint16_
 {
 	EPD_W21_WriteCMD(GDEH_SET_X_ADDR_START_END_CMD);
 	EPD_W21_WriteDATA(X_Start);
-	EPD_W21_WriteDATA(X_End/8);
+	uint8_t temp= (X_End/8)-1;
+	EPD_W21_WriteDATA(temp);
 	EPD_W21_WriteCMD(GDEH_SET_Y_ADDR_START_END_CMD);
 	EPD_W21_WriteDATA(Y_Start);
 	EPD_W21_WriteDATA((Y_Start>>8)&0x01);
@@ -268,3 +269,4 @@ void GDEH_CLEAR(int SIZE)
 	}
 	GDEH_UPDATE();
 }
+

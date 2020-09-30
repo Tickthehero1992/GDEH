@@ -218,7 +218,7 @@ typedef struct GDEH
 {
 	uint8_t connect_type;
 	uint8_t gate_drive;
-	uint16_t height;
+	uint8_t height;
 	uint16_t width;
 	GDEH_GATE_VOLTAGE VOLTAGE;
 	GDEH_ENTRY_SEQ SEQUENCE;
