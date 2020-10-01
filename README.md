@@ -1,4 +1,6 @@
-GDEH library
+GDEH library. 
+Library SPI for GDE chips: https://github.com/Tickthehero1992/GDESPI
+
 Structures info:
 GDEH_GATE_VOLTAGE - enum, voltage Variations,
 GDEH_SOFT_START-   structure, soft start, usually 0x17, 0x17, 0x17
