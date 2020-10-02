@@ -26,38 +26,38 @@ GDEH - structure, display parameters.
 	
 Main functions:
 
-GDEH_RESET -reset display,
-GDEH_INITIAL_CODE - initial command,
-GDEH_MASTER_ACTIVATE - activate command
-GDEH_Write_BW - write Black White pallet command
-GDEH_Write_RED - write Red pallet command
-GDEH_PROGRAM_OTP - Write OTP_VCOM
-GDEH_WRITE_REG_VCOM_CNTL - Write Register Vcom Control
-GDEH_AUTO_RED(_byte) - auto filling red bytes,
-GDEH_AUTO_BW(_byte)  - auto filling black and white
-GDEH_TERMINATOR - terminate command creation.
+GDEH_RESET(GDEH) -reset display,
+GDEH_INITIAL_CODE(GDEH) - initial command,
+GDEH_MASTER_ACTIVATE(GDEH) - activate command
+GDEH_Write_BW(GDEH) - write Black White pallet command
+GDEH_Write_RED(GDEH) - write Red pallet command
+GDEH_PROGRAM_OTP(GDEH) - Write OTP_VCOM
+GDEH_WRITE_REG_VCOM_CNTL(GDEH) - Write Register Vcom Control
+GDEH_AUTO_RED(GDEH,_byte) - auto filling red bytes,
+GDEH_AUTO_BW(GDEH,_byte)  - auto filling black and white
+GDEH_TERMINATOR(GDEH) - terminate command creation.
 
 void GDEH_INIT(GDEH)- init GDEH display;
-void GDEH_WRITE_VOLTAGE(GDEH_GATE_VOLTAGE) - setup Voltage;
-void GDEH_WRITE_SOURCE_VOLTAGE(float,float) - source of Voltage
-void GDEH_WRITE_REG_INI_CODE() - 
-void GDEH_BUSY_CHECK() - check busy state.
-uint8_t GDEH_READ_REG()- read register.
-void GDEH_BOOST_START(GDEH_SOFT_START) - soft start with own parameters.
-void GDEH_GO_SLEEP(GDEH_DEEP_SLEEP) - GDEH sleep 
-void GDEH_ENTRYMODE_SETTINGS(GDEH_ENTRY_SEQ) - squence to fill display.
-void GDEH_VCI_DETECTION(GDEH_VCI_DETECT) - detect VCI.
-void GDEH_TEMP_CNTL(uint16_t) - temperature sensor control setups
-void GDEH_UPD_CNT(GDEH_Display_Update) - setup display updates
-void GDEH_VCOM_SENSE_Duration(uint8_t) - ground sense duration setup
-uint8_t GDEH_WRITE_VCOM(float) - Write VCOM voltage
-void GDEH_WRITE_REGS_FOR_DISP_OPT_USER(uint8_t* , uint8_t) - write display options
-void GDEH_WAVEFORM_CTL(GDEH_WFM_CTL )- edit waveform control
-void GDEH_SET_POSITION(uint8_t X_Start, uint8_t X_End, uint16_t Y_Start, uint16_t Y_End)-position of start painting
-void GDEH_SET_ADDRESS_CNTR(uint8_t ADRX, uint16_t ADRY)-cntr address // usually all addreses
-void GDEH_UPDATE() - update display
-void GDEH_WRITE(uint8_t *BLACK_WHITE, uint8_t* RED, int SIZE, uint8_t INVERSE) - paint Picture array
-void GDEH_CLEAR(int SIZE) - clear Display
+void GDEH_WRITE_VOLTAGE(GDEH,GDEH_GATE_VOLTAGE) - setup Voltage;
+void GDEH_WRITE_SOURCE_VOLTAGE(GDEH,float,float) - source of Voltage
+void GDEH_WRITE_REG_INI_CODE(GDEH) - 
+void GDEH_BUSY_CHECK(GDEH) - check busy state.
+uint8_t GDEH_READ_REG(GDEH)- read register.
+void GDEH_BOOST_START(GDEH,GDEH_SOFT_START) - soft start with own parameters.
+void GDEH_GO_SLEEP(GDEH,GDEH_DEEP_SLEEP) - GDEH sleep 
+void GDEH_ENTRYMODE_SETTINGS(GDEH,GDEH_ENTRY_SEQ) - squence to fill display.
+void GDEH_VCI_DETECTION(GDEH,GDEH_VCI_DETECT) - detect VCI.
+void GDEH_TEMP_CNTL(GDEH,uint16_t) - temperature sensor control setups
+void GDEH_UPD_CNT(GDEH,GDEH_Display_Update) - setup display updates
+void GDEH_VCOM_SENSE_Duration(GDEH,uint8_t) - ground sense duration setup
+uint8_t GDEH_WRITE_VCOM(GDEH,float) - Write VCOM voltage
+void GDEH_WRITE_REGS_FOR_DISP_OPT_USER(GDEH,uint8_t* , uint8_t) - write display options
+void GDEH_WAVEFORM_CTL(GDEH,GDEH_WFM_CTL )- edit waveform control
+void GDEH_SET_POSITION(GDEH,uint8_t X_Start, uint8_t X_End, uint16_t Y_Start, uint16_t Y_End)-position of start painting
+void GDEH_SET_ADDRESS_CNTR(GDEH,uint8_t ADRX, uint16_t ADRY)-cntr address // usually all addreses
+void GDEH_UPDATE(GDEH) - update display
+void GDEH_WRITE(GDEH,uint8_t *BLACK_WHITE, uint8_t* RED, int SIZE, uint8_t INVERSE) - paint Picture array
+void GDEH_CLEAR(GDEH,int SIZE) - clear Display
 
 
 
